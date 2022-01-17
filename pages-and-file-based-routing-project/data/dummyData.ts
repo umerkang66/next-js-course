@@ -31,20 +31,32 @@ const DUMMY_EVENTS = [
   },
 ];
 
-export function getFeaturedEvents() {
-  return DUMMY_EVENTS.filter(event => event.isFeatured);
+export interface Event {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  date: string;
+  image: string;
+  isFeatured: boolean;
 }
 
-export function getAllEvents() {
+export type Events = Event[];
+
+export const getFeaturedEvents = (): Events => {
+  return DUMMY_EVENTS.filter(event => event.isFeatured);
+};
+
+export const getAllEvents = (): Events => {
   return DUMMY_EVENTS;
-}
+};
 
 interface DateFilter {
   year: number;
   month: number;
 }
 
-export function getFilteredEvents(dateFilter: DateFilter) {
+export const getFilteredEvents = (dateFilter: DateFilter): Events => {
   const { year, month } = dateFilter;
 
   let filteredEvents = DUMMY_EVENTS.filter(event => {
@@ -55,8 +67,8 @@ export function getFilteredEvents(dateFilter: DateFilter) {
   });
 
   return filteredEvents;
-}
+};
 
-export function getEventById(id: string) {
+export const getEventById = (id: string): Event | undefined => {
   return DUMMY_EVENTS.find(event => event.id === id);
-}
+};
