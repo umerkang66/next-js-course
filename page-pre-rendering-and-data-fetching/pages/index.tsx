@@ -1,9 +1,4 @@
-import type {
-  NextPage,
-  InferGetStaticPropsType,
-  GetStaticProps,
-  GetStaticPropsResult,
-} from 'next';
+import type { NextPage, InferGetStaticPropsType } from 'next';
 
 export const getStaticProps = async () => {
   // This function should always return an object that contains props property, this props object will become props object of Page component that will be exported default from this module
