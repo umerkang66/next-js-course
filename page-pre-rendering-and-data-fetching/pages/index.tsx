@@ -7,7 +7,7 @@ import type {
 import fs from 'fs/promises';
 import path from 'path';
 
-import type { Products } from 'types/Product';
+import type { Products } from 'types/product';
 import Link from 'next/link';
 
 // This runs on build time, not on the fly, but getServerSideProps runs on the the fly, not build time

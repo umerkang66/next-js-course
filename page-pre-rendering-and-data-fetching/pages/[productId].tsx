@@ -1,19 +1,8 @@
 import { NextPage, InferGetStaticPropsType, GetStaticPropsContext } from 'next';
 import { Fragment } from 'react';
 
-import fs from 'fs/promises';
-import path from 'path';
-
-import type { Products } from 'types/Product';
-
-async function getData() {
-  const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
-  // process.cwd: current working directory will not be the pages folder, because this is a server side function that will be executed by next js, so the current working directory will be product root folder
-  const dataJson = await fs.readFile(filePath, 'utf-8');
-  const data = JSON.parse(dataJson);
-
-  return data;
-}
+import type { Products } from 'types/product';
+import { getData } from 'hooks/get-data';
 
 // For dynamic page, next js won't pre build the page, because ids (pageIds) may be too much, but they are generated on the fly (just on time) on the server, but getStaticProps tries to generate the pages on the build time, so we get an error, to avoid this issue we have getStaticPaths function provided by next
 export async function getStaticProps(context: GetStaticPropsContext) {
@@ -56,11 +45,13 @@ export async function getStaticPaths() {
 
   return {
     paths: pathsParam,
-    /* paths: [
+    /* 
+    paths: [
       { params: { productId: 'p1' } },
       { params: { productId: 'p2' } },
       { params: { productId: 'p3' } },
-    ], */
+    ], 
+    */
     // We can pre-render some pages, and set the fallback to true, so the other pages would be build on the fly (on the server), now we have only three pages, so i just pre-built all the pages, but if we have more pages, pre-building is not optimal, so then we set fallback to true
     fallback: true, // We are generating all the pages
     // We can also set the fallback to string 'blocking' by doing that, we don't have to check if the product is undefined in the component, page will automatically wait for the data to arrive (hence no error will occur)
