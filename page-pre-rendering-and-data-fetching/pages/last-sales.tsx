@@ -1,6 +1,6 @@
 import type { InferGetStaticPropsType, NextPage } from 'next';
 import { useEffect, useState } from 'react';
-import useSWR, { Fetcher } from 'swr';
+import useSWR from 'swr';
 
 import type { Sales } from 'types/sale';
 import { getUrl } from 'hooks/get-url';
@@ -31,7 +31,6 @@ const LastSalesPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ salesFromServer }) => {
   const [sales, setSales] = useState<Sales>(salesFromServer);
-
   const { data, error } = useSWR(getUrl(), fetch);
 
   useEffect(() => {
