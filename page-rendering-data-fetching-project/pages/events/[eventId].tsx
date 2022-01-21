@@ -1,19 +1,47 @@
 import { Fragment } from 'react';
-import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { Event, getEventById } from 'data/dummyData';
+import type {
+  GetStaticPropsContext,
+  InferGetStaticPropsType,
+  NextPage,
+} from 'next';
+
+import { getEventById, getFeaturedEvents } from 'hooks/api-util';
 import EventSummary from 'components/event-detail/event-summary';
 import EventLogistics from 'components/event-detail/event-logistics';
 import EventContent from 'components/event-detail/event-content';
 
-const EventDetailPage: NextPage = () => {
-  const router = useRouter();
-  const { eventId } = router.query;
+export async function getStaticProps(context: GetStaticPropsContext) {
+  const { params } = context;
+  const id = params?.eventId;
 
-  let event: Event | undefined = undefined;
-  if (typeof eventId === 'string') {
-    event = getEventById(eventId);
-  }
+  const eventById = typeof id === 'string' ? await getEventById(id) : undefined;
+
+  return {
+    props: {
+      event: eventById,
+    },
+    revalidate: 30,
+    notFound: !eventById ? true : false,
+  };
+}
+
+export async function getStaticPaths() {
+  const events = await getFeaturedEvents();
+
+  const pathParams = events.map(event => ({
+    params: { eventId: event.id },
+  }));
+
+  return {
+    paths: pathParams,
+    fallback: 'blocking',
+  };
+}
+
+const EventDetailPage: NextPage<
+  InferGetStaticPropsType<typeof getStaticProps>
+> = props => {
+  const { event } = props;
 
   if (!event) {
     return <h4>No Event found</h4>;

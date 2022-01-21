@@ -1,15 +1,20 @@
 // If we enter single dynamic parameter it is going to caught by [eventId].tsx but if we enter more than one dynamic parameters, the are going to caught by this [...slug].tsx
-import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from 'next';
 
-import { Events, getFilteredEvents } from 'data/dummyData';
+import { Events } from 'data/dummyData';
+import { getFilteredEvents } from 'hooks/api-util';
 import EventList from 'components/events/event-list';
 import { Fragment } from 'react';
 import Button from 'components/ui/button';
 
-const FilteredEventsPage: NextPage = () => {
-  const router = useRouter();
-  const filteredData = router.query.slug;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { params } = context;
+
+  const filteredData = params?.slug;
 
   if (!filteredData) {
     return <p>Loading...</p>;
@@ -31,18 +36,44 @@ const FilteredEventsPage: NextPage = () => {
       numMonth < 1 ||
       numMonth > 12
     ) {
-      return (
-        <Fragment>
-          <p>Invalid filter please adjust value</p>
-          <Button link="/events">Show all Events</Button>
-        </Fragment>
-      );
+      return {
+        props: {
+          hasError: true,
+        },
+        // Here will not show the 404 page but the handle the error on the component itself, because its not a page, but a combination of month, and year does not found
+        // notFound: true,
+      };
     }
 
-    filteredEvents = getFilteredEvents({ year: numYear, month: numMonth });
+    filteredEvents = await getFilteredEvents({
+      year: numYear,
+      month: numMonth,
+    });
   }
 
-  if (!filteredEvents || filteredEvents.length === 0) {
+  return {
+    props: {
+      events: filteredEvents,
+      hasError: false,
+    },
+  };
+}
+
+const FilteredEventsPage: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = props => {
+  const { hasError, events } = props;
+
+  if (hasError) {
+    return (
+      <Fragment>
+        <p>Invalid filter please adjust value</p>
+        <Button link="/events">Show all Events</Button>
+      </Fragment>
+    );
+  }
+
+  if (!events || events.length === 0) {
     return (
       <Fragment>
         <p>No events found for the chosen filter!</p>
@@ -53,7 +84,7 @@ const FilteredEventsPage: NextPage = () => {
 
   return (
     <div>
-      <EventList items={filteredEvents} />
+      <EventList items={events} />
     </div>
   );
 };
