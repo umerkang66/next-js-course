@@ -4,6 +4,7 @@ import type {
   InferGetStaticPropsType,
   NextPage,
 } from 'next';
+import Head from 'next/head';
 
 import { getEventById, getFeaturedEvents } from 'hooks/api-util';
 import EventSummary from 'components/event-detail/event-summary';
@@ -49,6 +50,14 @@ const EventDetailPage: NextPage<
 
   return (
     <Fragment>
+      <Head>
+        <title>{event.title}</title>
+        <meta
+          // This meta tag with description, this will be shows in the google search result description
+          name="description"
+          content={event.description}
+        />
+      </Head>
       <EventSummary title={event.title} />
       <EventLogistics
         date={event.date}

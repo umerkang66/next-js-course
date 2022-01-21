@@ -4,6 +4,7 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from 'next';
+import Head from 'next/head';
 
 import { Events } from 'data/dummyData';
 import { getFilteredEvents } from 'hooks/api-util';
@@ -64,9 +65,21 @@ const FilteredEventsPage: NextPage<
 > = props => {
   const { hasError, events } = props;
 
+  const pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta
+        // This meta tag with description, this will be shows in the google search result description
+        name="description"
+        content="All Events for specific filter"
+      />
+    </Head>
+  );
+
   if (hasError) {
     return (
       <Fragment>
+        {pageHeadData}
         <p>Invalid filter please adjust value</p>
         <Button link="/events">Show all Events</Button>
       </Fragment>
@@ -76,6 +89,7 @@ const FilteredEventsPage: NextPage<
   if (!events || events.length === 0) {
     return (
       <Fragment>
+        {pageHeadData}
         <p>No events found for the chosen filter!</p>
         <Button link="/events">Show all Events</Button>
       </Fragment>
@@ -84,6 +98,7 @@ const FilteredEventsPage: NextPage<
 
   return (
     <div>
+      {pageHeadData}
       <EventList items={events} />
     </div>
   );

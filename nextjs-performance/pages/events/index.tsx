@@ -1,4 +1,5 @@
 import type { InferGetStaticPropsType, NextPage } from 'next';
+import Head from 'next/head';
 import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 
@@ -31,6 +32,14 @@ const AllEventsPage: NextPage<
 
   return (
     <Fragment>
+      <Head>
+        <title>NextJs Events</title>
+        <meta
+          // This meta tag with description, this will be shows in the google search result description
+          name="description"
+          content="Find a lot of great events, that allow to evolve"
+        />
+      </Head>
       <EventsSearch onSearch={findEventsHandler} />
       <EventList items={events} />
     </Fragment>
