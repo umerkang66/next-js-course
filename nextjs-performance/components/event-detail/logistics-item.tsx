@@ -2,7 +2,7 @@ import { FC } from 'react';
 import classes from './logistics-item.module.css';
 
 interface LogisticsItemProps {
-  icon: string;
+  icon: () => JSX.Element;
 }
 
 const LogisticsItem: FC<LogisticsItemProps> = props => {
