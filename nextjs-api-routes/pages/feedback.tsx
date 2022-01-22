@@ -1,6 +1,6 @@
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { useState } from 'react';
-import { getData } from './api/feedback';
+import { getData } from './api/feedback/feedback';
 
 interface ResObj {
   id: string;
@@ -24,7 +24,7 @@ const Feedback: NextPage<
   const [details, setDetails] = useState<ResObj | null>(null);
 
   const showDetails = async (id: string) => {
-    const res = await fetch(`/api/${id}`);
+    const res = await fetch(`/api/feedback/${id}`);
     const dataReq = await res.json();
     const data: ResObj = dataReq.data;
 
