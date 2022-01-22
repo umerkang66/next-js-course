@@ -5,6 +5,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { eventId } = req.query;
   if (typeof eventId !== 'string') return;
 
+  // In the error handling, we don't want to close the connections if the connection is failed, but close the connection where you return the response (not just pass the response)
   const client = await MongoClient.connect(
     `mongodb+srv://ugulzar4512:ugulzar4512@cluster0.hp6lx.mongodb.net/events?retryWrites=true&w=majority`
   );
